@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <link href="https://fonts.googleapis.com/css2?family=Lexend&display=swap" rel="stylesheet">
+  <meta charset="UTF-8">
+  <title>Beet App - Support</title>
+  <style>
+    body {
+      margin: 0;
+      background-color: #1D1D1D;
+      font-family: 'Lexend', sans-serif;
+      color: #fff;
+    }
+    
+    header {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      background-color: transparent;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 15px 50px;
+      z-index: 1000;
+    }
+    
+    .logo img {
+      height: 40px;
+    }
+    
+    nav ul {
+      list-style: none;
+      margin: 0;
+      padding: 0;
+      display: flex;
+    }
+    
+    nav ul li {
+      margin-left: 25px;
+    }
+    
+    nav ul li a {
+      color: #fff;
+      text-decoration: none;
+      font-weight: bold;
+    }
+    
+    /* Support page styles */
+    main.support-page {
+      padding: 100px 50px 50px; /* extra top padding to account for the fixed header */
+      max-width: 800px;
+      margin: 0 auto;
+    }
+    
+    main.support-page h1 {
+      font-size: 48px;
+      margin-bottom: 20px;
+      color: #018749;
+    }
+    
+    main.support-page h2 {
+      font-size: 32px;
+      margin-top: 40px;
+      margin-bottom: 20px;
+      color: #fff;
+    }
+    
+    main.support-page p {
+      font-size: 16px;
+      line-height: 1.5;
+      color: #bbb;
+    }
+    
+    .faq-item {
+      margin-bottom: 20px;
+    }
+    
+    .faq-item h3 {
+      font-size: 20px;
+      margin-bottom: 10px;
+      color: #CF2D71;
+    }
+    
+    .faq-item p {
+      margin: 0;
+    }
+    
+    .contact form {
+      display: flex;
+      flex-direction: column;
+    }
+    
+    .contact form label {
+      margin-bottom: 5px;
+      font-weight: bold;
+    }
+    
+    .contact form input,
+    .contact form textarea {
+      padding: 10px;
+      margin-bottom: 15px;
+      border: none;
+      border-radius: 4px;
+      font-size: 16px;
+    }
+    
+    .contact form button {
+      padding: 10px;
+      background-color: #018749;
+      border: none;
+      border-radius: 4px;
+      color: #fff;
+      font-weight: bold;
+      cursor: pointer;
+    }
+    
+    .contact form button:hover {
+      background-color: #016f3d;
+    }
+    
+    footer {
+      text-align: center;
+      padding: 20px;
+      color: #bbb;
+      font-size: 14px;
+    }
+    
+    footer a {
+      color: #CF2D71;
+      text-decoration: none;
+    }
+  </style>
+  <script>
+    // Since this support page does not need the image carousel,
+    // the previous script is not required here.
+    document.addEventListener("DOMContentLoaded", function() {
+      // Additional support-page scripts can be added here if needed.
+    });
+  </script>
+</head>
+<body>
+  <header>
+    <div class="logo">
+      <a href="index.html">
+        <img src="logo.png" alt="Beet Logo">
+      </a>
+    </div>
+  </header>
+  
+  <main class="support-page">
+    <h2>Support</h2>
+    <p>If you're experiencing issues or have any questions about the Beet App, we're here to help. Please review our frequently asked questions below or reach out directly sending us message via beetappreimagined@gmail.com.</p>
+    
+    <section class="faq">
+      <h2>Frequently Asked Questions</h2>
+      
+      <div class="faq-item">
+        <h3>App doesn't play a sound?</h3>
+        <p>This app does not support external playback devices like CarPlay or headphones at this time. To avoid any playback issues, please ensure that all such devices are disconnected from your phone before using the app. We appreciate your understanding as we work on expanding compatibility in future updates.</p>
+      </div>
+      
+      <div class="faq-item">
+        <h3>How can I update the app?</h3>
+        <p>Open the App Store and tap your profile icon to view available updates. Locate the Beet App and tap "Update" to download and install the latest version. Once the update completes, launch the app to enjoy its new features.</p>
+      </div>
+      
+      <div class="faq-item">
+        <h3>Is my data secure?</h3>
+        <p>Our app is designed with your security in mind. It processes audio in real time to create a visual representation and immediately discards the complete audio file, ensuring that no recordings are stored. This approach guarantees that your privacy is always protected.</p>
+      </div>
+    </section>
+  </main>
+  
+  <footer>
+    <p>&copy; 2025 Beet App. All rights reserved. <a href="privacy-policy.html">Privacy Policy</a></p>
+  </footer>
+</body>
+</html>
