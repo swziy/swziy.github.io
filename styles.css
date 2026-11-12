@@ -1,0 +1,743 @@
+/* Beet website.
+   The look follows the app's Session style: flat panels divided by hairlines, one pink accent.
+   Colors and measures are the ones in beet-ui-kit (Color+Session, View+Session); headlines are
+   set like the captions of the App Store screenshots (Lexend, the key words bold and pink). */
+
+:root {
+  /* Surfaces */
+  --page: #1d1d1d;        /* behind everything, as in the screenshots */
+  --background: #232323;  /* behind the panels of the app */
+  --panel: #2e2e2e;
+  --control: #3d3d3d;
+  --control-hover: #484848;
+  --well: #1a1a1a;        /* a recessed area: the waveform, a value box */
+  --hairline: #111111;
+
+  /* Text */
+  --text: #e6e6e6;
+  --text-secondary: #b8b8b8;
+  --label: #8f8f95;
+
+  /* Accent */
+  --accent: #ff6ea7;
+  --on-accent: #4b1528;
+  --accent-dim: #7d4660;
+  --on-accent-dim: #ffd3e6;
+  --accent-text: #ff8cc4;
+
+  --grid-strong: rgba(255, 255, 255, 0.38);
+  --grid-weak: rgba(255, 255, 255, 0.13);
+
+  /* Timing accuracy */
+  --excellent: #4ade80;
+  --good: #facc15;
+  --acceptable: #fb923c;
+  --poor: #f87171;
+
+  --radius: 3px;
+  --gutter: 6px;
+
+  --ui: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Inter", "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  --display: "Lexend", var(--ui);
+}
+
+*, *::before, *::after { box-sizing: border-box; }
+
+html {
+  background: var(--page);
+  color-scheme: dark;
+  scroll-behavior: smooth;
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  margin: 0;
+  font: 400 16px/1.6 var(--ui);
+  color: var(--text);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+img { max-width: 100%; }
+
+a { color: var(--accent-text); }
+
+:focus-visible {
+  outline: 2px solid var(--accent-text);
+  outline-offset: 2px;
+}
+
+.wrap {
+  width: 100%;
+  max-width: 1160px;
+  margin-inline: auto;
+  padding-inline: clamp(16px, 4vw, 40px);
+}
+
+/* Headlines: the captions of the screenshots */
+h1, h2 {
+  font-family: var(--display);
+  font-weight: 400;
+  letter-spacing: -0.012em;
+  color: #fff;
+  margin: 0;
+  text-wrap: balance;
+}
+h1 b, h2 b {
+  font-weight: 700;
+  color: var(--accent);
+}
+
+/* ---------- Controls ---------- */
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  min-height: 46px;
+  padding: 0 18px;
+  border: 0;
+  border-radius: var(--radius);
+  background: var(--control);
+  color: var(--text);
+  font: 500 15px/1 var(--ui);
+  text-decoration: none;
+  cursor: pointer;
+}
+.btn:hover { background: var(--control-hover); }
+.btn:active { opacity: 0.65; }
+.btn svg { flex: none; }
+
+.btn-accent {
+  background: var(--accent);
+  color: var(--on-accent);
+  font-weight: 600;
+}
+.btn-accent:hover { background: var(--accent-text); }
+
+.btn-small {
+  min-height: 34px;
+  padding: 0 14px;
+  font-size: 14px;
+}
+
+/* ---------- Top bar ---------- */
+
+.topbar {
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  background: var(--background);
+  border-bottom: 1px solid var(--hairline);
+}
+.topbar .wrap {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  height: 56px;
+}
+.brand { display: block; flex: none; }
+.brand img {
+  display: block;
+  height: 26px;
+  width: auto;
+}
+.nav {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+}
+.nav a:not(.btn) {
+  padding: 7px 12px;
+  border-radius: var(--radius);
+  color: var(--text-secondary);
+  font-size: 14px;
+  font-weight: 500;
+  text-decoration: none;
+}
+.nav a:not(.btn):hover {
+  color: var(--text);
+  background: var(--panel);
+}
+.nav a[aria-current="page"] {
+  color: var(--on-accent-dim);
+  background: var(--accent-dim);
+}
+.nav .btn { margin-left: 10px; }
+
+/* ---------- Hero ---------- */
+
+.hero-copy { padding-block: clamp(56px, 8vw, 104px) clamp(40px, 5vw, 64px); }
+.hero h1 {
+  font-size: clamp(48px, 12.5vw, 136px);
+  line-height: 1.07;
+  margin-bottom: 28px;
+}
+.lead {
+  max-width: 31em;
+  margin: 0 0 32px;
+  font-size: clamp(17px, 1.5vw, 20px);
+  line-height: 1.55;
+  color: var(--text-secondary);
+  text-wrap: pretty;
+}
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--gutter);
+}
+.fineprint {
+  margin: 20px 0 0;
+  font-size: 13px;
+  color: var(--label);
+}
+
+/* ---------- Features: one clip each, as on a timeline ---------- */
+
+.features {
+  padding-block: clamp(48px, 7vw, 88px);
+  scroll-margin-top: 56px;
+}
+.deck-cards {
+  display: grid;
+  gap: 28px;
+}
+.deck-nav,
+.deck-playhead { display: none; }
+.clip {
+  border: 1px solid var(--hairline);
+  border-radius: var(--radius);
+  background: var(--well);
+  overflow: hidden;
+}
+/* The ruler on top of a clip: the beats of one bar */
+.clip-ruler {
+  display: grid;
+  grid-template-columns: repeat(8, minmax(0, 1fr));
+  height: 22px;
+  background: var(--panel);
+  border-bottom: 1px solid var(--hairline);
+  color: var(--label);
+  font: 400 11px/1 var(--ui);
+  font-variant-numeric: tabular-nums;
+}
+.clip-ruler span {
+  display: flex;
+  align-items: center;
+  padding-left: 6px;
+  border-left: 1px solid var(--grid-weak);
+}
+.clip-ruler span:first-child {
+  color: var(--text);
+  border-left-color: transparent;
+}
+.clip-ruler span:nth-child(5) { border-left-color: var(--grid-strong); }
+
+.clip-body {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+}
+.clip-copy {
+  align-self: center;
+  padding: clamp(24px, 5vw, 64px);
+}
+.clip.flip .clip-copy { order: 2; }
+.clip h2 {
+  font-size: clamp(26px, 3.5vw, 44px);
+  line-height: 1.1;
+  margin-bottom: 18px;
+}
+.clip p {
+  max-width: 30em;
+  margin: 0 0 26px;
+  font-size: 17px;
+  color: var(--text-secondary);
+  text-wrap: pretty;
+}
+.clip-device {
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  height: 600px;
+  padding-top: 48px;
+  overflow: hidden;
+}
+.clip-device img {
+  display: block;
+  flex: none;
+  width: 310px;
+  height: auto;
+}
+/* A bigger phone that shows only the upper part of its screen, or only the lower one */
+.clip-device.from-top img,
+.clip-device.from-bottom img { width: 390px; }
+.clip-device.from-bottom {
+  align-items: flex-end;
+  padding-top: 0;
+  padding-bottom: 48px;
+}
+
+/* ---------- Features, in one place ----------
+   With scripting and a screen tall enough for a whole clip, the clips share one place that
+   stays put while the page scrolls, and scrolling changes which of them is in it. The row of
+   cells under them names them and says which, as the row of beats does in the app. */
+
+@media (min-height: 600px) {
+  .js .features {
+    --screen: 100vh;
+    --deck: min(var(--screen) - 96px, 860px);
+    /* Where the deck stays put: in the middle of what the top bar leaves of the screen */
+    --rest: calc(56px + (var(--screen) - 56px - var(--deck)) / 2);
+    /* Scrolling 64% of a screen brings the next clip */
+    height: calc(var(--deck) + 4.2 * 0.64 * var(--screen));
+    margin-bottom: clamp(48px, 7vw, 88px);
+    padding-block: 0;
+    scroll-margin-top: var(--rest);
+  }
+  @supports (height: 100svh) {
+    .js .features { --screen: 100svh; }
+  }
+  .js .features-stage {
+    position: sticky;
+    top: var(--rest);
+    height: var(--deck);
+  }
+  .js .deck {
+    display: flex;
+    flex-direction: column;
+    gap: var(--gutter);
+    height: 100%;
+  }
+  /* The frame of the clips stays: only what is in it changes */
+  .js .deck-cards {
+    position: relative;
+    display: block;
+    flex: 1;
+    min-height: 0;
+    border: 1px solid var(--hairline);
+    border-radius: var(--radius);
+    background: var(--well);
+    overflow: hidden;
+  }
+  .js .deck-cards::before { /* the strip of the ruler */
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 22px;
+    border-bottom: 1px solid var(--hairline);
+    background: var(--panel);
+  }
+  .js .clip {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    flex-direction: column;
+    border: 0;
+    border-radius: 0;
+    background: none;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.2s ease, visibility 0s linear 0.2s;
+  }
+  /* The clip that comes waits a moment for the one that leaves, so their texts don't mix */
+  .js .clip.is-active {
+    opacity: 1;
+    visibility: visible;
+    transition: opacity 0.3s ease 0.1s, visibility 0s;
+  }
+  .js .clip-ruler {
+    border-bottom-color: transparent;
+    background: none;
+  }
+  /* The bars of the ruler, the text and the phone of a clip fade, and move a little as they
+     do: the clips are in the order of a timeline, so the next one comes from the right and
+     the one that leaves goes to the left, and the other way round when scrolling back. */
+  .js .clip-ruler,
+  .js .clip-copy,
+  .js .clip-device {
+    transform: translateX(28px);
+    transition: transform 0.2s ease-in;
+  }
+  .js .clip.is-before .clip-ruler,
+  .js .clip.is-before .clip-copy,
+  .js .clip.is-before .clip-device { transform: translateX(-28px); }
+  .js .clip.is-active .clip-ruler,
+  .js .clip.is-active .clip-copy,
+  .js .clip.is-active .clip-device {
+    transform: none;
+    transition: transform 0.4s cubic-bezier(0.2, 0.7, 0.2, 1) 0.1s;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .js .clip .clip-ruler,
+    .js .clip .clip-copy,
+    .js .clip .clip-device {
+      transform: none;
+      transition: none;
+    }
+  }
+  .js .clip-body {
+    flex: 1;
+    min-height: 0;
+    grid-template-rows: minmax(0, 1fr);
+  }
+  /* The same side for every clip, so only what is in the clip changes */
+  .js .clip.flip .clip-copy { order: 0; }
+  .js .clip-copy { padding-block: 24px; }
+  .js .clip h2 { font-size: clamp(26px, min(3.5vw, 5.4vh), 44px); }
+  /* The whole phone where there is room for it, its upper part where there isn't */
+  .js .clip-device {
+    height: auto;
+    min-height: 0;
+    padding-block: 36px;
+  }
+  .js .clip-device img {
+    width: auto;
+    height: clamp(593px, 100%, 820px);
+    margin-block: auto;
+  }
+  /* These two are always cut, however tall the clip is */
+  .js .clip-device.from-top img,
+  .js .clip-device.from-bottom img {
+    height: max(826px, 128%);
+    margin-block: 0;
+  }
+  .js .clip-device.from-top { padding-bottom: 0; }
+  .js .clip-device.from-bottom { padding: 0 0 36px; }
+
+  /* The playhead on the ruler: how far the page is through this clip */
+  .js .deck-playhead {
+    position: absolute;
+    z-index: 1;
+    top: 0;
+    left: calc(var(--through, 0) * (100% - 1px));
+    display: block;
+    width: 1px;
+    height: 22px;
+    background: #fff;
+  }
+
+  .js .deck-nav {
+    display: grid;
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+    gap: var(--gutter);
+  }
+  .deck-nav button {
+    display: flex;
+    gap: 8px;
+    height: 36px;
+    padding: 6px 8px;
+    border: 0;
+    border-radius: var(--radius);
+    background: var(--accent-dim);
+    color: var(--on-accent-dim);
+    font: 400 12px/1 var(--ui);
+    font-variant-numeric: tabular-nums;
+    text-align: left;
+    white-space: nowrap;
+    overflow: hidden;
+    cursor: pointer;
+  }
+  .deck-nav button:hover { background: #8f5470; }
+  .deck-nav button[aria-current] {
+    background: var(--accent);
+    color: var(--on-accent);
+    font-weight: 600;
+  }
+
+  /* The tables need a tall and wide clip */
+  @media (max-height: 779px), (max-width: 900px) {
+    .js .clip .rows,
+    .js .clip .panel { display: none; }
+    .js .clip p { margin-bottom: 0; }
+  }
+
+  @media (max-width: 760px) {
+    .js .features { --deck: calc(var(--screen) - 80px); }
+    .js .clip-body {
+      display: flex;
+      flex-direction: column;
+    }
+    .js .clip-copy {
+      flex: none;
+      padding: 22px 20px 0;
+    }
+    .js .clip h2 { margin-bottom: 12px; }
+    .js .clip p { font-size: 15.5px; line-height: 1.5; }
+    .js .clip-device {
+      flex: 1;
+      padding: 20px 0 0;
+    }
+    .js .clip-device img {
+      width: min(270px, 72%);
+      height: auto;
+      margin-block: 0;
+    }
+    .js .clip-device.from-top img,
+    .js .clip-device.from-bottom img {
+      width: min(330px, 86%);
+      height: auto;
+    }
+    .js .clip-device.from-bottom {
+      margin-top: 20px;
+      padding: 0 0 20px;
+      border-top: 1px solid var(--hairline);
+      background: var(--page);
+    }
+    /* Only the cell of the clip that is shown has room for its name */
+    .js .deck-nav { display: flex; }
+    .deck-nav button { flex: 0 0 44px; }
+    .deck-nav button[aria-current] { flex: 1 1 auto; }
+    .deck-nav button:not([aria-current]) .deck-nav-name { display: none; }
+  }
+}
+
+/* ---------- Panels and tables of the app ---------- */
+
+.panel {
+  max-width: 30em;
+  padding: 8px;
+  border: 1px solid var(--hairline);
+  border-radius: var(--radius);
+  background: var(--panel);
+}
+.panel + .rows { margin-top: var(--gutter); }
+.panel-label {
+  margin: 0 0 8px 2px;
+  font-size: 12.5px;
+  line-height: 1.2;
+  color: var(--label);
+}
+.chips {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 4px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.chips li {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 38px;
+  border-radius: var(--radius);
+  background: var(--control);
+  font-size: 14px;
+  font-variant-numeric: tabular-nums;
+}
+.chips li.selected {
+  background: var(--accent);
+  color: var(--on-accent);
+}
+
+/* Rows divided by hairlines, a name on the left and a value on the right */
+.rows {
+  display: grid;
+  gap: 1px;
+  max-width: 30em;
+  margin: 0;
+  border: 1px solid var(--hairline);
+  border-radius: var(--radius);
+  background: var(--hairline);
+  overflow: hidden;
+  font-size: 14.5px;
+  line-height: 1.35;
+}
+.rows > div {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 9px 12px;
+  background: var(--panel);
+}
+.rows .rows-header {
+  padding-block: 7px;
+  font-size: 12.5px;
+  color: var(--label);
+}
+.rows dt { color: var(--text); }
+.rows dd {
+  margin: 0;
+  color: var(--text-secondary);
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+.rows .value { color: var(--accent-text); }
+.swatch {
+  display: inline-block;
+  width: 9px;
+  height: 9px;
+  margin-right: 9px;
+  border-radius: 1px;
+  background: var(--swatch);
+}
+
+/* ---------- Closing ---------- */
+
+.closing {
+  border-top: 1px solid var(--hairline);
+  background: var(--background);
+  overflow: hidden;
+}
+.closing-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  gap: 24px;
+}
+.closing-device {
+  position: relative;
+  min-height: 500px;
+}
+.closing-device img {
+  position: absolute;
+  top: 56px;
+  left: 50%;
+  width: 520px;
+  max-width: none;
+  height: auto;
+  transform: translateX(-54%);
+}
+.closing-copy {
+  align-self: center;
+  padding-block: 72px;
+}
+.closing h2 {
+  font-size: clamp(36px, 4.6vw, 60px);
+  line-height: 1.07;
+  margin-bottom: 20px;
+}
+.closing .lead { margin-bottom: 28px; }
+
+/* ---------- Footer ---------- */
+
+.footer {
+  border-top: 1px solid var(--hairline);
+  background: var(--background);
+  font-size: 14px;
+  color: var(--label);
+}
+.footer .wrap {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px 32px;
+  padding-block: 26px;
+}
+.footer img {
+  display: block;
+  height: 20px;
+  width: auto;
+}
+.footer nav {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 24px;
+}
+.footer a {
+  color: var(--text-secondary);
+  text-decoration: none;
+}
+.footer a:hover { color: var(--accent-text); }
+.footer p { margin: 0; }
+
+/* ---------- Support and privacy ---------- */
+
+.page {
+  max-width: 800px;
+  padding-block: clamp(40px, 7vw, 80px) clamp(56px, 8vw, 96px);
+}
+.page h1 {
+  font-size: clamp(40px, 6vw, 64px);
+  line-height: 1.07;
+  margin-bottom: 20px;
+}
+.page h2 {
+  font-size: clamp(24px, 3vw, 30px);
+  line-height: 1.15;
+  margin: 48px 0 16px;
+}
+.page p,
+.page li { color: var(--text-secondary); }
+.page .lead { max-width: none; }
+.page a { text-underline-offset: 3px; }
+.page a.btn { color: var(--on-accent); }
+
+.faq {
+  display: grid;
+  gap: var(--gutter);
+}
+.faq-item {
+  padding: 16px 18px 18px;
+  border: 1px solid var(--hairline);
+  border-radius: var(--radius);
+  background: var(--panel);
+}
+.faq-item h3 {
+  margin: 0 0 8px;
+  font: 500 17px/1.35 var(--ui);
+  color: var(--accent-text);
+}
+.faq-item p { margin: 0; }
+
+/* The policy keeps the markup of its generator: titles are <strong>, spaced with <br> */
+.legal br { display: none; }
+.legal > strong {
+  display: block;
+  margin: 40px 0 12px;
+  font: 500 22px/1.2 var(--display);
+  letter-spacing: -0.012em;
+  color: #fff;
+}
+.legal p { margin: 0 0 14px; }
+.legal ul {
+  margin: 0 0 14px;
+  padding-left: 22px;
+}
+.legal li { margin-bottom: 6px; }
+.legal hr {
+  margin: 40px 0 20px;
+  border: 0;
+  border-top: 1px solid var(--hairline);
+}
+
+/* ---------- Narrower screens ---------- */
+
+@media (max-width: 900px) {
+  .closing-grid { grid-template-columns: minmax(0, 1fr); gap: 0; }
+  .closing-copy { order: -1; padding-block: 56px 32px; }
+  .closing-device { min-height: 0; height: 380px; }
+  .closing-device img { top: 0; width: min(92vw, 460px); }
+}
+
+@media (max-width: 760px) {
+  .clip-body { grid-template-columns: minmax(0, 1fr); }
+  .clip.flip .clip-copy { order: 0; }
+  .clip-copy { padding-bottom: 8px; }
+  .clip-device { height: 460px; padding-top: 32px; }
+  .clip-device img { width: min(280px, 74%); }
+  .clip-device.from-top img,
+  .clip-device.from-bottom img { width: min(330px, 84%); }
+  /* The phone is cut at its top here: a line shows that it is meant to be */
+  .clip-device.from-bottom {
+    margin-top: 28px;
+    padding-bottom: 32px;
+    border-top: 1px solid var(--hairline);
+    background: var(--page);
+  }
+}
+
+@media (max-width: 560px) {
+  .nav .btn { display: none; }
+  .nav a:not(.btn) { padding-inline: 9px; }
+  .clip-ruler span:nth-child(even) { font-size: 0; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+}

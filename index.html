@@ -4,1041 +4,261 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Beet - Metronome Reimagined</title>
+  <meta name="description" content="Beet is a metronome that shows your timing. Play along to the click, see your take as a waveform on the beat grid and get it measured beat by beat. For iPhone, iPad and Apple Watch.">
+  <meta name="theme-color" content="#232323">
   <link rel="icon" type="image/png" href="favicon.png">
-  <link href="https://fonts.googleapis.com/css2?family=Sora:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-  <style>
-    :root {
-      --primary: #CF2D71;
-      --primary-light: #E84A8A;
-      --primary-dark: #A61F5A;
-      --bg-dark: #0A0A0B;
-      --bg-card: #111113;
-      --bg-card-hover: #1A1A1D;
-      --text-primary: #FFFFFF;
-      --text-secondary: #9A9A9E;
-      --text-muted: #5A5A5E;
-      --gradient-pink: linear-gradient(135deg, #CF2D71 0%, #E84A8A 50%, #CF2D71 100%);
-      --gradient-glow: radial-gradient(ellipse at center, rgba(207, 45, 113, 0.15) 0%, transparent 70%);
-    }
-
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-    }
-
-    html {
-      scroll-behavior: smooth;
-    }
-
-    body {
-      font-family: 'Sora', sans-serif;
-      background-color: var(--bg-dark);
-      color: var(--text-primary);
-      overflow-x: hidden;
-      line-height: 1.6;
-    }
-
-    /* Animated background */
-    .bg-gradient {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      pointer-events: none;
-      z-index: -1;
-    }
-
-    .bg-gradient::before {
-      content: '';
-      position: absolute;
-      top: -50%;
-      left: -50%;
-      width: 200%;
-      height: 200%;
-      background:
-        radial-gradient(ellipse at 20% 20%, rgba(207, 45, 113, 0.08) 0%, transparent 50%),
-        radial-gradient(ellipse at 80% 80%, rgba(207, 45, 113, 0.05) 0%, transparent 50%),
-        radial-gradient(ellipse at 50% 50%, rgba(207, 45, 113, 0.03) 0%, transparent 70%);
-      animation: bgPulse 15s ease-in-out infinite;
-    }
-
-    @keyframes bgPulse {
-      0%, 100% { transform: translate(0, 0) scale(1); opacity: 1; }
-      50% { transform: translate(-5%, -5%) scale(1.1); opacity: 0.8; }
-    }
-
-    /* Header */
-    header {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      padding: 20px 60px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      z-index: 1000;
-      backdrop-filter: blur(20px);
-      background: rgba(10, 10, 11, 0.8);
-      border-bottom: 1px solid rgba(255, 255, 255, 0.05);
-    }
-
-    .logo img {
-      height: 36px;
-      transition: transform 0.3s ease;
-    }
-
-    .logo:hover img {
-      transform: scale(1.05);
-    }
-
-    nav ul {
-      display: flex;
-      list-style: none;
-      gap: 40px;
-    }
-
-    nav ul li a {
-      color: var(--text-secondary);
-      text-decoration: none;
-      font-size: 14px;
-      font-weight: 500;
-      transition: color 0.3s ease;
-      position: relative;
-    }
-
-    nav ul li a::after {
-      content: '';
-      position: absolute;
-      bottom: -4px;
-      left: 0;
-      width: 0;
-      height: 2px;
-      background: var(--primary);
-      transition: width 0.3s ease;
-    }
-
-    nav ul li a:hover {
-      color: var(--text-primary);
-    }
-
-    nav ul li a:hover::after {
-      width: 100%;
-    }
-
-    /* Hero Section */
-    .hero {
-      min-height: 100vh;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      padding: 120px 60px 80px;
-      position: relative;
-    }
-
-    .hero-content {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 80px;
-      max-width: 1400px;
-      width: 100%;
-      align-items: center;
-    }
-
-    .hero-text {
-      animation: fadeInUp 1s ease-out;
-    }
-
-    @keyframes fadeInUp {
-      from {
-        opacity: 0;
-        transform: translateY(40px);
-      }
-      to {
-        opacity: 1;
-        transform: translateY(0);
-      }
-    }
-
-    .hero-badge {
-      display: inline-flex;
-      align-items: center;
-      gap: 8px;
-      background: rgba(207, 45, 113, 0.1);
-      border: 1px solid rgba(207, 45, 113, 0.3);
-      padding: 8px 16px;
-      border-radius: 50px;
-      font-size: 12px;
-      font-weight: 500;
-      color: var(--primary-light);
-      margin-bottom: 24px;
-      animation: fadeInUp 1s ease-out 0.1s both;
-    }
-
-    .hero-badge::before {
-      content: '';
-      width: 8px;
-      height: 8px;
-      background: var(--primary);
-      border-radius: 50%;
-      animation: pulse 2s ease-in-out infinite;
-    }
-
-    @keyframes pulse {
-      0%, 100% { opacity: 1; transform: scale(1); }
-      50% { opacity: 0.5; transform: scale(1.2); }
-    }
-
-    .hero-title {
-      font-size: clamp(42px, 5vw, 72px);
-      font-weight: 700;
-      line-height: 1.1;
-      margin-bottom: 24px;
-      animation: fadeInUp 1s ease-out 0.2s both;
-    }
-
-    .hero-title .highlight {
-      background: var(--gradient-pink);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      background-clip: text;
-    }
-
-    .hero-description {
-      font-size: 18px;
-      color: var(--text-secondary);
-      margin-bottom: 40px;
-      max-width: 480px;
-      animation: fadeInUp 1s ease-out 0.3s both;
-    }
-
-    .hero-buttons {
-      display: flex;
-      gap: 16px;
-      animation: fadeInUp 1s ease-out 0.4s both;
-    }
-
-    .btn-primary {
-      display: inline-flex;
-      align-items: center;
-      gap: 12px;
-      background: var(--gradient-pink);
-      color: white;
-      padding: 16px 32px;
-      border-radius: 14px;
-      text-decoration: none;
-      font-weight: 600;
-      font-size: 15px;
-      transition: all 0.3s ease;
-      box-shadow: 0 4px 20px rgba(207, 45, 113, 0.3);
-    }
-
-    .btn-primary:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 8px 30px rgba(207, 45, 113, 0.4);
-    }
-
-    .btn-primary img {
-      height: 24px;
-    }
-
-    .btn-secondary {
-      display: inline-flex;
-      align-items: center;
-      gap: 10px;
-      background: rgba(255, 255, 255, 0.05);
-      border: 1px solid rgba(255, 255, 255, 0.1);
-      color: white;
-      padding: 16px 32px;
-      border-radius: 14px;
-      text-decoration: none;
-      font-weight: 500;
-      font-size: 15px;
-      transition: all 0.3s ease;
-    }
-
-    .btn-secondary:hover {
-      background: rgba(255, 255, 255, 0.1);
-      border-color: rgba(255, 255, 255, 0.2);
-    }
-
-    /* Hero Device Showcase */
-    .hero-devices {
-      position: relative;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      animation: fadeInUp 1s ease-out 0.5s both;
-    }
-
-    .device-container {
-      position: relative;
-      width: 100%;
-      max-width: 700px;
-      min-height: 500px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
-
-    .device-iphone {
-      position: relative;
-      z-index: 2;
-      width: 340px;
-      margin-left: auto;
-      filter: drop-shadow(0 40px 80px rgba(0, 0, 0, 0.5));
-      animation: float 6s ease-in-out infinite;
-    }
-
-    .device-ipad {
-      position: absolute;
-      left: 0;
-      top: 50%;
-      transform: translateY(-50%);
-      width: 400px;
-      z-index: 1;
-      filter: drop-shadow(0 30px 60px rgba(0, 0, 0, 0.4));
-      animation: float 6s ease-in-out infinite 1s;
-    }
-
-    @keyframes float {
-      0%, 100% { transform: translateY(-50%) translateX(0); }
-      50% { transform: translateY(calc(-50% - 15px)) translateX(5px); }
-    }
-
-    .device-iphone {
-      animation: floatSingle 6s ease-in-out infinite;
-    }
-
-    @keyframes floatSingle {
-      0%, 100% { transform: translateY(0); }
-      50% { transform: translateY(-15px); }
-    }
-
-    /* Glow effect */
-    .glow-ring {
-      position: absolute;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%);
-      width: 500px;
-      height: 500px;
-      border-radius: 50%;
-      background: radial-gradient(circle, rgba(207, 45, 113, 0.2) 0%, transparent 70%);
-      filter: blur(40px);
-      z-index: 0;
-      animation: glowPulse 4s ease-in-out infinite;
-    }
-
-    @keyframes glowPulse {
-      0%, 100% { opacity: 0.6; transform: translate(-50%, -50%) scale(1); }
-      50% { opacity: 1; transform: translate(-50%, -50%) scale(1.1); }
-    }
-
-    /* Stats Section */
-    .stats {
-      display: flex;
-      gap: 48px;
-      margin-top: 60px;
-      padding-top: 40px;
-      border-top: 1px solid rgba(255, 255, 255, 0.05);
-      animation: fadeInUp 1s ease-out 0.6s both;
-    }
-
-    .stat-item {
-      text-align: left;
-    }
-
-    .stat-value {
-      font-size: 28px;
-      font-weight: 700;
-      color: var(--text-primary);
-      margin-bottom: 4px;
-    }
-
-    .stat-label {
-      font-size: 13px;
-      color: var(--text-muted);
-      text-transform: uppercase;
-      letter-spacing: 1px;
-    }
-
-    /* Features Section */
-    .features {
-      padding: 120px 60px;
-      position: relative;
-    }
-
-    .section-header {
-      text-align: center;
-      max-width: 600px;
-      margin: 0 auto 80px;
-    }
-
-    .section-tag {
-      display: inline-block;
-      font-size: 12px;
-      font-weight: 600;
-      color: var(--primary);
-      text-transform: uppercase;
-      letter-spacing: 2px;
-      margin-bottom: 16px;
-    }
-
-    .section-title {
-      font-size: clamp(32px, 4vw, 48px);
-      font-weight: 700;
-      margin-bottom: 20px;
-    }
-
-    .section-description {
-      font-size: 16px;
-      color: var(--text-secondary);
-    }
-
-    .features-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-      gap: 24px;
-      max-width: 1200px;
-      margin: 0 auto;
-    }
-
-    .feature-card {
-      background: var(--bg-card);
-      border: 1px solid rgba(255, 255, 255, 0.05);
-      border-radius: 20px;
-      padding: 36px;
-      transition: all 0.4s ease;
-      position: relative;
-      overflow: hidden;
-    }
-
-    .feature-card::before {
-      content: '';
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background: linear-gradient(135deg, rgba(207, 45, 113, 0.05) 0%, transparent 50%);
-      opacity: 0;
-      transition: opacity 0.4s ease;
-    }
-
-    .feature-card:hover {
-      transform: translateY(-8px);
-      border-color: rgba(207, 45, 113, 0.2);
-      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
-    }
-
-    .feature-card:hover::before {
-      opacity: 1;
-    }
-
-    .feature-icon {
-      width: 56px;
-      height: 56px;
-      background: linear-gradient(135deg, rgba(207, 45, 113, 0.2) 0%, rgba(207, 45, 113, 0.1) 100%);
-      border-radius: 16px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      margin-bottom: 24px;
-      font-size: 24px;
-    }
-
-    .feature-title {
-      font-size: 20px;
-      font-weight: 600;
-      margin-bottom: 12px;
-    }
-
-    .feature-description {
-      font-size: 14px;
-      color: var(--text-secondary);
-      line-height: 1.7;
-    }
-
-    /* Showcase Section */
-    .showcase {
-      padding: 120px 60px;
-      background: linear-gradient(180deg, transparent 0%, rgba(207, 45, 113, 0.03) 50%, transparent 100%);
-    }
-
-    .showcase-content {
-      max-width: 1400px;
-      margin: 0 auto;
-    }
-
-    .showcase-grid {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 80px;
-      align-items: center;
-    }
-
-    .showcase-images {
-      position: relative;
-      display: flex;
-      justify-content: center;
-    }
-
-    .showcase-device {
-      width: 100%;
-      max-width: 500px;
-      border-radius: 24px;
-      filter: drop-shadow(0 30px 60px rgba(0, 0, 0, 0.4));
-    }
-
-    .showcase-text h3 {
-      font-size: clamp(28px, 3vw, 40px);
-      font-weight: 700;
-      margin-bottom: 24px;
-    }
-
-    .showcase-text p {
-      font-size: 16px;
-      color: var(--text-secondary);
-      margin-bottom: 32px;
-    }
-
-    .feature-list {
-      list-style: none;
-    }
-
-    .feature-list li {
-      display: flex;
-      align-items: flex-start;
-      gap: 16px;
-      margin-bottom: 20px;
-      font-size: 15px;
-      color: var(--text-secondary);
-    }
-
-    .feature-list li::before {
-      content: '✓';
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      width: 24px;
-      height: 24px;
-      background: rgba(207, 45, 113, 0.2);
-      color: var(--primary-light);
-      border-radius: 50%;
-      font-size: 12px;
-      flex-shrink: 0;
-    }
-
-    /* Devices Section */
-    .devices-section {
-      padding: 120px 60px;
-    }
-
-    .devices-showcase {
-      max-width: 1000px;
-      margin: 60px auto 0;
-      display: flex;
-      justify-content: center;
-      gap: 40px;
-      flex-wrap: wrap;
-    }
-
-    .device-badge {
-      display: flex;
-      align-items: center;
-      gap: 16px;
-      background: var(--bg-card);
-      border: 1px solid rgba(255, 255, 255, 0.05);
-      padding: 20px 32px;
-      border-radius: 16px;
-      transition: all 0.3s ease;
-    }
-
-    .device-badge:hover {
-      border-color: rgba(207, 45, 113, 0.3);
-      transform: translateY(-4px);
-    }
-
-    .device-badge svg {
-      width: 32px;
-      height: 32px;
-      fill: var(--primary);
-    }
-
-    .device-badge span {
-      font-size: 16px;
-      font-weight: 500;
-    }
-
-    /* CTA Section */
-    .cta {
-      padding: 120px 60px;
-      position: relative;
-    }
-
-    .cta-container {
-      max-width: 900px;
-      margin: 0 auto;
-      text-align: center;
-      background: linear-gradient(135deg, var(--bg-card) 0%, rgba(207, 45, 113, 0.1) 100%);
-      border: 1px solid rgba(207, 45, 113, 0.2);
-      border-radius: 32px;
-      padding: 80px 60px;
-      position: relative;
-      overflow: hidden;
-    }
-
-    .cta-container::before {
-      content: '';
-      position: absolute;
-      top: -50%;
-      left: -50%;
-      width: 200%;
-      height: 200%;
-      background: radial-gradient(circle at center, rgba(207, 45, 113, 0.1) 0%, transparent 50%);
-      animation: rotate 20s linear infinite;
-    }
-
-    @keyframes rotate {
-      from { transform: rotate(0deg); }
-      to { transform: rotate(360deg); }
-    }
-
-    .cta-content {
-      position: relative;
-      z-index: 1;
-    }
-
-    .cta h2 {
-      font-size: clamp(32px, 4vw, 48px);
-      font-weight: 700;
-      margin-bottom: 20px;
-    }
-
-    .cta p {
-      font-size: 18px;
-      color: var(--text-secondary);
-      margin-bottom: 40px;
-      max-width: 500px;
-      margin-left: auto;
-      margin-right: auto;
-    }
-
-    /* Footer */
-    footer {
-      padding: 60px;
-      border-top: 1px solid rgba(255, 255, 255, 0.05);
-    }
-
-    .footer-content {
-      max-width: 1200px;
-      margin: 0 auto;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      flex-wrap: wrap;
-      gap: 20px;
-    }
-
-    .footer-logo img {
-      height: 28px;
-      opacity: 0.7;
-    }
-
-    .footer-links {
-      display: flex;
-      gap: 32px;
-    }
-
-    .footer-links a {
-      color: var(--text-muted);
-      text-decoration: none;
-      font-size: 14px;
-      transition: color 0.3s ease;
-    }
-
-    .footer-links a:hover {
-      color: var(--primary);
-    }
-
-    .footer-copy {
-      color: var(--text-muted);
-      font-size: 13px;
-    }
-
-    /* Responsive */
-    @media (max-width: 1024px) {
-      header {
-        padding: 16px 30px;
-      }
-
-      .hero {
-        padding: 100px 30px 60px;
-      }
-
-      .hero-content {
-        grid-template-columns: 1fr;
-        gap: 60px;
-        text-align: center;
-      }
-
-      .hero-text {
-        order: 1;
-      }
-
-      .hero-devices {
-        order: 2;
-      }
-
-      .hero-description {
-        margin-left: auto;
-        margin-right: auto;
-      }
-
-      .hero-buttons {
-        justify-content: center;
-        flex-wrap: wrap;
-      }
-
-      .stats {
-        justify-content: center;
-      }
-
-      .device-container {
-        max-width: 500px;
-      }
-
-      .device-iphone {
-        width: 260px;
-      }
-
-      .device-ipad {
-        width: 320px;
-      }
-
-      .showcase-grid {
-        grid-template-columns: 1fr;
-        gap: 60px;
-        text-align: center;
-      }
-
-      .showcase-images {
-        order: -1;
-      }
-
-      .features, .showcase, .devices-section, .cta {
-        padding: 80px 30px;
-      }
-    }
-
-    @media (max-width: 768px) {
-      nav ul {
-        display: none;
-      }
-
-      .hero-title {
-        font-size: 36px;
-      }
-
-      .device-container {
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        gap: 30px;
-        min-height: auto;
-      }
-
-      .device-ipad {
-        position: relative;
-        top: auto;
-        left: auto;
-        transform: none;
-        width: 90%;
-        max-width: 400px;
-        order: 2;
-        animation: floatSingle 6s ease-in-out infinite 1s;
-      }
-
-      .device-iphone {
-        position: relative;
-        width: 80%;
-        max-width: 320px;
-        margin: 0 auto;
-        order: 1;
-      }
-
-      .glow-ring {
-        display: none;
-      }
-
-      .stats {
-        flex-direction: column;
-        gap: 24px;
-        align-items: center;
-      }
-
-      .stat-item {
-        text-align: center;
-      }
-
-      .features-grid {
-        grid-template-columns: 1fr;
-      }
-
-      .cta-container {
-        padding: 60px 30px;
-      }
-
-      .footer-content {
-        flex-direction: column;
-        text-align: center;
-      }
-    }
-
-    /* Scroll animations */
-    .fade-in {
-      opacity: 0;
-      transform: translateY(30px);
-      transition: all 0.8s ease;
-    }
-
-    .fade-in.visible {
-      opacity: 1;
-      transform: translateY(0);
-    }
-  </style>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Lexend:wght@400;500;700&display=swap" rel="stylesheet">
+  <script>document.documentElement.classList.add('js');</script>
+  <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-  <div class="bg-gradient"></div>
-
-  <header>
-    <a href="index.html" class="logo">
-      <img src="logo.png" alt="Beet">
-    </a>
-    <nav>
-      <ul>
-        <li><a href="#features">Features</a></li>
-        <li><a href="#showcase">Showcase</a></li>
-        <li><a href="support.html">Support</a></li>
-        <li><a href="privacy-policy.html">Privacy</a></li>
-      </ul>
-    </nav>
+  <header class="topbar">
+    <div class="wrap">
+      <a href="index.html" class="brand">
+        <img src="logo.png" alt="Beet" width="1355" height="341">
+      </a>
+      <nav class="nav" aria-label="Main">
+        <a href="#features">Features</a>
+        <a href="support.html">Support</a>
+        <a href="privacy-policy.html">Privacy</a>
+        <a href="https://apps.apple.com/app/id6741735743" class="btn btn-accent btn-small">Get the app</a>
+      </nav>
+    </div>
   </header>
 
-  <section class="hero">
-    <div class="hero-content">
-      <div class="hero-text">
-        <div class="hero-badge">
-          <span>Now Available on App Store</span>
-        </div>
-        <h1 class="hero-title">
-          Metronome<br><span class="highlight">Reimagined</span>
-        </h1>
-        <p class="hero-description">
-          Master your timing with Beet. Real-time visual feedback, precise BPM control, tap tempo, and professional-grade accuracy — designed for musicians who demand perfection.
-        </p>
-        <div class="hero-buttons">
-          <a href="https://apps.apple.com/app/id6741735743" class="btn-primary">
-            <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
-              <path d="M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 .77-3.27.82-1.31.05-2.3-1.32-3.14-2.53C4.25 17 2.94 12.45 4.7 9.39c.87-1.52 2.43-2.48 4.12-2.51 1.28-.02 2.5.87 3.29.87.78 0 2.26-1.07 3.81-.91.65.03 2.47.26 3.64 1.98-.09.06-2.17 1.28-2.15 3.81.03 3.02 2.65 4.03 2.68 4.04-.03.07-.42 1.44-1.38 2.83M13 3.5c.73-.83 1.94-1.46 2.94-1.5.13 1.17-.34 2.35-1.04 3.19-.69.85-1.83 1.51-2.95 1.42-.15-1.15.41-2.35 1.05-3.11z"/>
-            </svg>
-            Download Now
-          </a>
-          <a href="#features" class="btn-secondary">
-            Learn More →
-          </a>
-        </div>
-        <div class="stats">
-          <div class="stat-item">
-            <div class="stat-value">30-300</div>
-            <div class="stat-label">BPM Range</div>
+  <main>
+    <section class="hero">
+      <div class="wrap">
+        <div class="hero-copy">
+          <h1>Metronome<br><b>reimagined</b></h1>
+          <p class="lead">Play along to the click and watch your take land on the beat grid, note by note. Then see how tight it was, in milliseconds.</p>
+          <div class="actions">
+            <a href="https://apps.apple.com/app/id6741735743" class="btn btn-accent">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                <path d="M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 .77-3.27.82-1.31.05-2.3-1.32-3.14-2.53C4.25 17 2.94 12.45 4.7 9.39c.87-1.52 2.43-2.48 4.12-2.51 1.28-.02 2.5.87 3.29.87.78 0 2.26-1.07 3.81-.91.65.03 2.47.26 3.64 1.98-.09.06-2.17 1.28-2.15 3.81.03 3.02 2.65 4.03 2.68 4.04-.03.07-.42 1.44-1.38 2.83M13 3.5c.73-.83 1.94-1.46 2.94-1.5.13 1.17-.34 2.35-1.04 3.19-.69.85-1.83 1.51-2.95 1.42-.15-1.15.41-2.35 1.05-3.11z"/>
+              </svg>
+              Download on the App Store
+            </a>
+            <a href="#features" class="btn">See what it does</a>
           </div>
-          <div class="stat-item">
-            <div class="stat-value">Real-time</div>
-            <div class="stat-label">Visual Feedback</div>
+          <p class="fineprint">For iPhone, iPad and Apple Watch</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="features" id="features" aria-label="Features">
+      <div class="features-stage">
+        <div class="wrap deck">
+          <div class="deck-cards">
+      <span class="deck-playhead" aria-hidden="true"></span>
+      <section class="clip is-active" aria-labelledby="waveform">
+        <div class="clip-ruler" aria-hidden="true"><span>1.1</span><span>1.2</span><span>1.3</span><span>1.4</span><span>1.5</span><span>1.6</span><span>1.7</span><span>1.8</span></div>
+        <div class="clip-body">
+          <div class="clip-copy">
+            <h2 id="waveform"><b>Waveform</b> feedback that shows your timing in real time</h2>
+            <p>Beet draws what the microphone hears right on the beat grid. Every note shows up where you played it: ahead of the beat, behind it, or dead on.</p>
+            <dl class="rows">
+              <div><dt>Input</dt><dd>Live waveform as you play</dd></div>
+              <div><dt>Last take</dt><dd>Stays on screen for review</dd></div>
+              <div><dt>Audio</dt><dd>Analyzed on your device</dd></div>
+            </dl>
           </div>
-          <div class="stat-item">
-            <div class="stat-value">Universal</div>
-            <div class="stat-label">iPhone, iPad & Watch</div>
+          <div class="clip-device from-top">
+            <img src="img/iphone-main.webp" width="760" height="1609" loading="lazy" alt="Beet on an iPhone: a recorded take drawn as a waveform between the lines of the beat grid, with every beat of the bar numbered above it">
+          </div>
+        </div>
+      </section>
+
+      <section class="clip flip is-after" aria-labelledby="controls">
+        <div class="clip-ruler" aria-hidden="true"><span>2.1</span><span>2.2</span><span>2.3</span><span>2.4</span><span>2.5</span><span>2.6</span><span>2.7</span><span>2.8</span></div>
+        <div class="clip-body">
+          <div class="clip-copy">
+            <h2 id="controls">Stay in the groove with <b>effortless</b> controls</h2>
+            <p>Everything sits on one screen, one touch away. Pick a subdivision, step the time signature, drag the tempo ruler, or just tap the tempo in.</p>
+            <div class="panel">
+              <div class="panel-label">Subdivision</div>
+              <ul class="chips">
+                <li>1 bar</li><li>1/2</li><li>1/2T</li>
+                <li>1/4</li><li class="selected">1/8</li><li>1/16</li>
+                <li>1/4T</li><li>1/8T</li><li>1/16T</li>
+              </ul>
+            </div>
+            <dl class="rows">
+              <div><dt>Tempo</dt><dd><span class="value">40–300</span> bpm</dd></div>
+            </dl>
+          </div>
+          <div class="clip-device from-bottom">
+            <img src="img/iphone-main.webp" width="760" height="1609" loading="lazy" alt="The controls of Beet on an iPhone: a row of beats, the subdivision buttons, the time signature, the tempo ruler at 112 bpm, and the tap and play buttons">
+          </div>
+        </div>
+      </section>
+
+      <section class="clip is-after" aria-labelledby="insights">
+        <div class="clip-ruler" aria-hidden="true"><span>3.1</span><span>3.2</span><span>3.3</span><span>3.4</span><span>3.5</span><span>3.6</span><span>3.7</span><span>3.8</span></div>
+        <div class="clip-body">
+          <div class="clip-copy">
+            <h2 id="insights">Advanced <b>timing analysis</b> measured beat by beat</h2>
+            <p>Timing Insights finds every note in your take and measures how far it is from the nearest spot on the grid, straight or triplet, in milliseconds.</p>
+            <dl class="rows">
+              <div class="rows-header">Timing accuracy</div>
+              <div><dt><span class="swatch" style="--swatch: var(--excellent)"></span>Excellent</dt><dd>under 20 ms</dd></div>
+              <div><dt><span class="swatch" style="--swatch: var(--good)"></span>Good</dt><dd>under 35 ms</dd></div>
+              <div><dt><span class="swatch" style="--swatch: var(--acceptable)"></span>Acceptable</dt><dd>under 50 ms</dd></div>
+              <div><dt><span class="swatch" style="--swatch: var(--poor)"></span>Poor</dt><dd>50 ms or more</dd></div>
+            </dl>
+          </div>
+          <div class="clip-device">
+            <img src="img/iphone-insights.webp" width="760" height="1609" loading="lazy" alt="Timing Insights on an iPhone: every note of the take marked green or yellow with its distance from the beat in milliseconds, above a table of the timing accuracy">
+          </div>
+        </div>
+      </section>
+
+      <section class="clip flip is-after" aria-labelledby="queue">
+        <div class="clip-ruler" aria-hidden="true"><span>4.1</span><span>4.2</span><span>4.3</span><span>4.4</span><span>4.5</span><span>4.6</span><span>4.7</span><span>4.8</span></div>
+        <div class="clip-body">
+          <div class="clip-copy">
+            <h2 id="queue">Build <b>practice queues</b> to automate your session</h2>
+            <p>Split a session into stages, each with its own length, tempo, time signature and subdivision. Press play and Beet moves from one stage to the next on its own.</p>
+            <dl class="rows">
+              <div class="rows-header">A stage</div>
+              <div><dt>Bars</dt><dd><span class="value">8</span></dd></div>
+              <div><dt>Tempo</dt><dd>112 bpm</dd></div>
+              <div><dt>Time signature</dt><dd>4/4</dd></div>
+              <div><dt>Subdivision</dt><dd>1/16</dd></div>
+            </dl>
+          </div>
+          <div class="clip-device">
+            <img src="img/iphone-queue.webp" width="760" height="1609" loading="lazy" alt="A practice queue on an iPhone: eight stages that go from 80 to 132 bpm, each with its bars, time signature and subdivision">
+          </div>
+        </div>
+      </section>
+
+      <section class="clip is-after" aria-labelledby="statistics">
+        <div class="clip-ruler" aria-hidden="true"><span>5.1</span><span>5.2</span><span>5.3</span><span>5.4</span><span>5.5</span><span>5.6</span><span>5.7</span><span>5.8</span></div>
+        <div class="clip-body">
+          <div class="clip-copy">
+            <h2 id="statistics">Monitor your progress over time with <b>charts</b></h2>
+            <p>Beet keeps track of how long you practice and how fast. See your total time split by tempo, and how much you played on each day of the week.</p>
+            <dl class="rows">
+              <div><dt>Tempo breakdown</dt><dd>Lento to Prestissimo</dd></div>
+              <div><dt>Weekly report</dt><dd>Day by day</dd></div>
+            </dl>
+          </div>
+          <div class="clip-device">
+            <img src="img/iphone-charts.webp" width="760" height="1609" loading="lazy" alt="Statistics on an iPhone: a ring chart of 3 hours 44 minutes of practice split by tempo, and a bar chart of the week">
+          </div>
+        </div>
+      </section>
+          </div>
+          <nav class="deck-nav" aria-label="Features">
+            <button type="button" aria-label="Waveform" aria-current="true"><span aria-hidden="true">1</span><span class="deck-nav-name" aria-hidden="true">Waveform</span></button>
+            <button type="button" aria-label="Controls"><span aria-hidden="true">2</span><span class="deck-nav-name" aria-hidden="true">Controls</span></button>
+            <button type="button" aria-label="Timing Insights"><span aria-hidden="true">3</span><span class="deck-nav-name" aria-hidden="true">Timing Insights</span></button>
+            <button type="button" aria-label="Practice queue"><span aria-hidden="true">4</span><span class="deck-nav-name" aria-hidden="true">Practice queue</span></button>
+            <button type="button" aria-label="Statistics"><span aria-hidden="true">5</span><span class="deck-nav-name" aria-hidden="true">Statistics</span></button>
+          </nav>
+        </div>
+      </div>
+    </section>
+
+    <section class="closing">
+      <div class="wrap closing-grid">
+        <div class="closing-device">
+          <img src="img/ipad-hero.webp" width="1500" height="2046" loading="lazy" alt="Beet on an iPad">
+        </div>
+        <div class="closing-copy">
+          <h2>A metronome that <b>listens</b></h2>
+          <p class="lead">Beet is on the App Store for iPhone, iPad and Apple Watch, in English and Spanish.</p>
+          <div class="actions">
+            <a href="https://apps.apple.com/app/id6741735743" class="btn btn-accent">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                <path d="M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 .77-3.27.82-1.31.05-2.3-1.32-3.14-2.53C4.25 17 2.94 12.45 4.7 9.39c.87-1.52 2.43-2.48 4.12-2.51 1.28-.02 2.5.87 3.29.87.78 0 2.26-1.07 3.81-.91.65.03 2.47.26 3.64 1.98-.09.06-2.17 1.28-2.15 3.81.03 3.02 2.65 4.03 2.68 4.04-.03.07-.42 1.44-1.38 2.83M13 3.5c.73-.83 1.94-1.46 2.94-1.5.13 1.17-.34 2.35-1.04 3.19-.69.85-1.83 1.51-2.95 1.42-.15-1.15.41-2.35 1.05-3.11z"/>
+              </svg>
+              Download on the App Store
+            </a>
           </div>
         </div>
       </div>
-      <div class="hero-devices">
-        <div class="glow-ring"></div>
-        <div class="device-container">
-          <img src="app-mockup-2.png" alt="Beet on iPad" class="device-ipad">
-          <img src="app-mockup.png" alt="Beet on iPhone" class="device-iphone">
-        </div>
-      </div>
-    </div>
-  </section>
+    </section>
+  </main>
 
-  <section class="features" id="features">
-    <div class="section-header fade-in">
-      <span class="section-tag">Features</span>
-      <h2 class="section-title">Everything You Need to Stay on Beat</h2>
-      <p class="section-description">Professional-grade metronome features designed for musicians of all skill levels</p>
-    </div>
-    <div class="features-grid">
-      <div class="feature-card fade-in">
-        <div class="feature-icon">📊</div>
-        <h3 class="feature-title">Real-Time Waveform</h3>
-        <p class="feature-description">Visualize your playing accuracy with a live waveform display. See exactly where your beats land and improve your timing with instant visual feedback.</p>
-      </div>
-      <div class="feature-card fade-in">
-        <div class="feature-icon">👆</div>
-        <h3 class="feature-title">Tap Tempo</h3>
-        <p class="feature-description">Find your tempo naturally by tapping. Beet calculates the BPM from your taps, making it easy to match any song or set your own pace.</p>
-      </div>
-      <div class="feature-card fade-in">
-        <div class="feature-icon">🎵</div>
-        <h3 class="feature-title">Time Signatures</h3>
-        <p class="feature-description">From common time to complex meters — 2/4, 3/4, 4/4, 5/8, and more. Practice any time signature with customizable accent patterns.</p>
-      </div>
-      <div class="feature-card fade-in">
-        <div class="feature-icon">➗</div>
-        <h3 class="feature-title">Subdivisions</h3>
-        <p class="feature-description">Practice with subdivisions including 1/2T, 1/4, 1/4T and more. Perfect for developing complex rhythmic skills and polyrhythmic awareness.</p>
-      </div>
-      <div class="feature-card fade-in">
-        <div class="feature-icon">🎚️</div>
-        <h3 class="feature-title">Precise BPM Control</h3>
-        <p class="feature-description">Smooth slider control for BPM from 30 to 300. Fine-tune your tempo with precision and lock in the exact speed you need.</p>
-      </div>
-      <div class="feature-card fade-in">
-        <div class="feature-icon">▶️</div>
-        <h3 class="feature-title">Session Playback</h3>
-        <p class="feature-description">Review your training sessions with built-in playback. Spot timing issues, analyze your performance, and refine your accuracy by learning from every practice.</p>
-      </div>
-    </div>
-  </section>
-
-  <section class="showcase" id="showcase">
-    <div class="showcase-content">
-      <div class="showcase-grid">
-        <div class="showcase-images fade-in">
-          <img src="app-mockup.png" alt="Beet App Interface" class="showcase-device">
-        </div>
-        <div class="showcase-text fade-in">
-          <h3>See Your Rhythm Like Never Before</h3>
-          <p>Unlike traditional metronomes that only give you audio feedback, Beet shows you exactly where your beats land with its innovative waveform visualization.</p>
-          <ul class="feature-list">
-            <li>Live audio input analysis shows your playing in real-time</li>
-            <li>Pink waveform clearly displays beat timing and accuracy</li>
-            <li>Vertical markers show where perfect timing should be</li>
-            <li>Zoom functionality for detailed timing analysis</li>
-            <li>Dark interface designed for stage and studio use</li>
-          </ul>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <section class="devices-section">
-    <div class="section-header fade-in">
-      <span class="section-tag">Universal App</span>
-      <h2 class="section-title">Play Anywhere, On Any Device</h2>
-      <p class="section-description">Beet is optimized for iPhone, iPad, and Apple Watch — giving you the perfect metronome experience wherever you practice</p>
-    </div>
-    <div class="devices-showcase fade-in">
-      <div class="device-badge">
-        <svg viewBox="0 0 24 24">
-          <path d="M15.5 1h-8C6.12 1 5 2.12 5 3.5v17C5 21.88 6.12 23 7.5 23h8c1.38 0 2.5-1.12 2.5-2.5v-17C18 2.12 16.88 1 15.5 1zm-4 21c-.83 0-1.5-.67-1.5-1.5s.67-1.5 1.5-1.5 1.5.67 1.5 1.5-.67 1.5-1.5 1.5zm4.5-4H7V4h9v14z"/>
-        </svg>
-        <span>iPhone</span>
-      </div>
-      <div class="device-badge">
-        <svg viewBox="0 0 24 24">
-          <path d="M19 1H5c-1.1 0-2 .9-2 2v18c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V3c0-1.1-.9-2-2-2zm0 18H5V5h14v14zm-7 2c-.55 0-1-.45-1-1s.45-1 1-1 1 .45 1 1-.45 1-1 1z"/>
-        </svg>
-        <span>iPad</span>
-      </div>
-      <div class="device-badge">
-        <svg viewBox="0 0 24 24">
-          <path d="M12 2C9.24 2 7 4.24 7 7v7c0 2.76 2.24 5 5 5s5-2.24 5-5V7c0-2.76-2.24-5-5-5zm3 12c0 1.65-1.35 3-3 3s-3-1.35-3-3V7c0-1.65 1.35-3 3-3s3 1.35 3 3v7zm-3-4c-.55 0-1 .45-1 1v2c0 .55.45 1 1 1s1-.45 1-1v-2c0-.55-.45-1-1-1zM5 7c-.55 0-1 .45-1 1v6c0 .55.45 1 1 1s1-.45 1-1V8c0-.55-.45-1-1-1zm14 0c-.55 0-1 .45-1 1v6c0 .55.45 1 1 1s1-.45 1-1V8c0-.55-.45-1-1-1z"/>
-        </svg>
-        <span>Apple Watch</span>
-      </div>
-    </div>
-  </section>
-
-  <section class="cta">
-    <div class="cta-container">
-      <div class="cta-content fade-in">
-        <h2>Ready to Perfect Your Timing?</h2>
-        <p>Download Beet today and start practicing with the most visually intuitive metronome available.</p>
-        <a href="https://apps.apple.com/app/id6741735743" class="btn-primary">
-          <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
-            <path d="M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 .77-3.27.82-1.31.05-2.3-1.32-3.14-2.53C4.25 17 2.94 12.45 4.7 9.39c.87-1.52 2.43-2.48 4.12-2.51 1.28-.02 2.5.87 3.29.87.78 0 2.26-1.07 3.81-.91.65.03 2.47.26 3.64 1.98-.09.06-2.17 1.28-2.15 3.81.03 3.02 2.65 4.03 2.68 4.04-.03.07-.42 1.44-1.38 2.83M13 3.5c.73-.83 1.94-1.46 2.94-1.5.13 1.17-.34 2.35-1.04 3.19-.69.85-1.83 1.51-2.95 1.42-.15-1.15.41-2.35 1.05-3.11z"/>
-          </svg>
-          Download on the App Store
-        </a>
-      </div>
-    </div>
-  </section>
-
-  <footer>
-    <div class="footer-content">
-      <a href="index.html" class="footer-logo">
-        <img src="logo.png" alt="Beet">
-      </a>
-      <div class="footer-links">
+  <footer class="footer">
+    <div class="wrap">
+      <a href="index.html"><img src="logo.png" alt="Beet" width="1355" height="341"></a>
+      <nav aria-label="Footer">
         <a href="support.html">Support</a>
         <a href="privacy-policy.html">Privacy Policy</a>
         <a href="https://apps.apple.com/app/id6741735743">App Store</a>
-      </div>
-      <div class="footer-copy">
-        © 2025 Beet. All rights reserved.
-      </div>
+      </nav>
+      <p>© 2026 Beet. All rights reserved.</p>
     </div>
   </footer>
 
   <script>
-    // Scroll animations
-    const observerOptions = {
-      root: null,
-      rootMargin: '0px',
-      threshold: 0.1
-    };
+    // The clips of the features share one place that stays put while the page scrolls.
+    // How far the page has scrolled past it decides which clip is shown.
+    (function () {
+      var track = document.querySelector('.features');
+      var stage = track.querySelector('.features-stage');
+      var clips = Array.prototype.slice.call(track.querySelectorAll('.clip'));
+      var buttons = Array.prototype.slice.call(track.querySelectorAll('.deck-nav button'));
+      var playhead = track.querySelector('.deck-playhead');
+      var last = clips.length - 1;
+      var shown = 0;
+      var waiting = false;
 
-    const observer = new IntersectionObserver((entries) => {
-      entries.forEach(entry => {
-        if (entry.isIntersecting) {
-          entry.target.classList.add('visible');
-        }
-      });
-    }, observerOptions);
-
-    document.querySelectorAll('.fade-in').forEach(el => {
-      observer.observe(el);
-    });
-
-    // Smooth scroll for anchor links
-    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-      anchor.addEventListener('click', function(e) {
-        e.preventDefault();
-        const target = document.querySelector(this.getAttribute('href'));
-        if (target) {
-          target.scrollIntoView({
-            behavior: 'smooth',
-            block: 'start'
-          });
-        }
-      });
-    });
-
-    // Header background on scroll
-    const header = document.querySelector('header');
-    window.addEventListener('scroll', () => {
-      if (window.scrollY > 50) {
-        header.style.background = 'rgba(10, 10, 11, 0.95)';
-      } else {
-        header.style.background = 'rgba(10, 10, 11, 0.8)';
+      // Scrolling is counted in clips: 0 where the stage starts to stay put, one more for each clip
+      // after it. The stage lets go a little after the last clip comes in.
+      function measure() {
+        var style = getComputedStyle(stage);
+        if (style.position !== 'sticky') return null; // the clips are one under another
+        var top = parseFloat(style.top) || 0;
+        var step = (track.offsetHeight - stage.offsetHeight) / (last + 0.2);
+        return { step: step, at: (top - track.getBoundingClientRect().top) / step };
       }
-    });
+      // A clip comes in a little before its count, so the first and the last are shown as long as the others
+      function starts(index) { return index === 0 ? 0 : index - 0.4; }
+      function ends(index) { return index === last ? last + 0.2 : index + 0.6; }
+
+      function update() {
+        waiting = false;
+        var place = measure();
+        if (!place) return;
+        var index = Math.max(0, Math.min(last, Math.floor(place.at + 0.4)));
+        var through = (place.at - starts(index)) / (ends(index) - starts(index));
+        playhead.style.setProperty('--through', Math.max(0, Math.min(1, through)));
+        if (index === shown) return;
+        shown = index;
+        clips.forEach(function (clip, i) {
+          clip.classList.toggle('is-active', i === index);
+          clip.classList.toggle('is-before', i < index);
+          clip.classList.toggle('is-after', i > index);
+        });
+        buttons.forEach(function (button, i) {
+          if (i === index) button.setAttribute('aria-current', 'true');
+          else button.removeAttribute('aria-current');
+        });
+      }
+      function later() {
+        if (waiting) return;
+        waiting = true;
+        requestAnimationFrame(update);
+      }
+
+      buttons.forEach(function (button, i) {
+        button.addEventListener('click', function () {
+          var place = measure();
+          if (!place) return;
+          var to = i === 0 ? 0 : i + 0.1;
+          window.scrollTo(0, window.scrollY + (to - place.at) * place.step);
+        });
+      });
+      window.addEventListener('scroll', later, { passive: true });
+      window.addEventListener('resize', later);
+      update();
+    })();
   </script>
 </body>
 </html>
